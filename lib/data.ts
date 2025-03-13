@@ -1,9 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { Question, User } from "./definitions";
 import { db } from "./db";
 
 /**
- * Query all titles
+ * Query all titles with filtering and pagination.
  */
 export async function fetchTitles(
   page: number,
@@ -32,19 +30,32 @@ export async function fetchTitles(
         .execute()
     ).map((row) => row.title_id);
 
-    //Fetch titles
-    const titles = await db
+    // Build Query
+    let queryBuilder = db
       .selectFrom("titles")
       .selectAll("titles")
-      .where("titles.released", ">=", minYear)
-      .where("titles.released", "<=", maxYear)
-      .where("titles.title", "ilike", `%${query}%`)
-      .where("titles.genre", "in", genres)
       .orderBy("titles.title", "asc")
-      .limit(6)
-      .offset((page - 1) * 6)
-      .execute();
+      .limit(6) // Pagination limit
+      .offset((page - 1) * 6); // Pagination offset
 
+    // Apply filters if they exist
+    if (minYear > 0) {
+      queryBuilder = queryBuilder.where("titles.released", ">=", minYear);
+    }
+    if (maxYear <= new Date().getFullYear()) {
+      queryBuilder = queryBuilder.where("titles.released", "<=", maxYear);
+    }
+    if (query) {
+      queryBuilder = queryBuilder.where("titles.title", "ilike", `%${query}%`);
+    }
+    if (genres.length > 0) {
+      queryBuilder = queryBuilder.where("titles.genre", "in", genres);
+    }
+
+    // Execute Query
+    const titles = await queryBuilder.execute();
+
+    // Return results with additional fields
     return titles.map((row) => ({
       ...row,
       favorited: favorites.includes(row.id),
@@ -52,8 +63,8 @@ export async function fetchTitles(
       image: `/images/${row.id}.webp`,
     }));
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch topics.");
+    console.error("Database Error - Failed to fetch titles:", error);
+    throw new Error("Failed to fetch titles.");
   }
 }
 
@@ -93,14 +104,13 @@ export async function fetchFavorites(page: number, userEmail: string) {
 }
 
 /**
- *  Add a title to a users favorites list.
+ *  Add a title to a user's favorites list.
  */
 export async function insertFavorite(title_id: string, userEmail: string) {
   try {
-    const data =
-      await sql<Question>`INSERT INTO favorites (title_id, user_id) VALUES (${title_id}, ${userEmail})`;
-    insertActivity(title_id, userEmail, "FAVORITED");
-    return data.rows;
+    await db.insertInto("favorites").values({ title_id, user_id: userEmail }).execute();
+    await insertActivity(title_id, userEmail, "FAVORITED");
+    return { message: "Favorite Added" };
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to add favorite.");
@@ -108,13 +118,30 @@ export async function insertFavorite(title_id: string, userEmail: string) {
 }
 
 /**
- * Remove a title from a users favorites list.
+ * Remove a title from a user's favorites list.
  */
 export async function deleteFavorite(title_id: string, userEmail: string) {
   try {
-    const data =
-      await sql<Question>`DELETE FROM favorites WHERE title_id = ${title_id} AND user_id = ${userEmail}`;
-    return data.rows;
+    const result = await db
+      .deleteFrom("favorites")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
+      .returning(["title_id"])
+      .execute();
+
+    if (result.length === 0) {
+      throw new Error("Favorite not found or already removed");
+    }
+
+    // delete the previous entry in activities
+    await db
+      .deleteFrom("activities")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
+      .where("activity", "=", "FAVORITED")
+      .execute();
+
+    return result;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete favorite.");
@@ -124,11 +151,16 @@ export async function deleteFavorite(title_id: string, userEmail: string) {
 /**
  * Check if a title is in a users favorites list.
  */
-export async function favoriteExists(title_id: string, userEmail: string) {
+export async function favoriteExists(title_id: string, userEmail: string): Promise<boolean> {
   try {
-    const data =
-      await sql<Question>`SELECT * FROM favorites WHERE title_id = ${title_id} AND user_id = ${userEmail}`;
-    return data.rows.length > 0;
+    const data = await db
+      .selectFrom("favorites")
+      .select("title_id")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
+      .execute();
+
+    return data.length > 0;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch favorite.");
@@ -171,32 +203,46 @@ export async function fetchWatchLaters(page: number, userEmail: string) {
 }
 
 /**
- * Add a title to a users watch later list.
+ * Add a title to a user's watch later list.
  */
 export async function insertWatchLater(title_id: string, userEmail: string) {
   try {
-    const data =
-      await sql<Question>`INSERT INTO watchLater (title_id, user_id) VALUES (${title_id}, ${userEmail})`;
-
-    insertActivity(title_id, userEmail, "WATCH_LATER");
-    return data.rows;
+    await db.insertInto("watchlater").values({ title_id, user_id: userEmail }).execute();
+    await insertActivity(title_id, userEmail, "WATCH_LATER");
+    return { message: "Added to Watch Later" };
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add watchLater.");
+    throw new Error("Failed to add watch later.");
   }
 }
 
 /**
- * Remove a title from a users watch later list.
+ * Remove a title from a user's watch later list.
  */
 export async function deleteWatchLater(title_id: string, userEmail: string) {
   try {
-    const data =
-      await sql`DELETE FROM watchLater WHERE title_id = ${title_id} AND user_id = ${userEmail}`;
-    return data.rows;
+    const result = await db
+      .deleteFrom("watchlater")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
+      .returning(["title_id"])
+      .execute();
+
+    if (result.length === 0) {
+      throw new Error("Watch Later entry not found or already removed");
+    }
+
+    await db
+      .deleteFrom("activities")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
+      .where("activity", "=", "WATCH_LATER")
+      .execute();
+
+    return result;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add watchLater.");
+    throw new Error("Failed to remove watch later entry.");
   }
 }
 
@@ -208,9 +254,14 @@ export async function watchLaterExists(
   userEmail: string
 ): Promise<boolean> {
   try {
-    const data =
-      await sql`SELECT * FROM watchLater WHERE title_id = ${title_id} AND user_id = ${userEmail}`;
-    return data.rows.length > 0;
+    const data = await db
+      .selectFrom('watchlater')
+      .select('title_id')
+      .where('title_id', '=', title_id)
+      .where('user_id', '=', userEmail)
+      .execute();
+
+    return data.length > 0;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch watchLater.");
@@ -221,11 +272,18 @@ export async function watchLaterExists(
  * Get all genres for titles.
  */
 export async function fetchGenres(): Promise<string[]> {
-  const data = await sql<{ genre: string }>`
-        SELECT DISTINCT titles.genre
-        FROM titles;
-      `;
-  return data.rows.map((row) => row.genre);
+  try {
+    const data = await db
+      .selectFrom("titles")
+      .distinct()
+      .select("titles.genre")
+      .execute();
+
+    return data.map((row) => row.genre);
+  } catch (error) {
+    console.error("Error fetching genres from database:", error);
+    throw new Error("Failed to fetch genres.");
+  }
 }
 
 /**
@@ -255,17 +313,47 @@ export async function fetchActivities(page: number, userEmail: string) {
   }
 }
 
-async function insertActivity(
+/**
+ * Insert activity into activity feed.
+ */
+export async function insertActivity(
   title_id: string,
   userEmail: string,
-  activity: "FAVORITED" | "WATCH_LATER"
+  activity: "FAVORITED" | "WATCH_LATER" | "REMOVED_FAVORITE" | "REMOVED_WATCH_LATER"
 ) {
   try {
-    const data =
-      await sql<Question>`INSERT INTO activities (title_id, user_id, activity) VALUES (${title_id}, ${userEmail}, ${activity})`;
-    return data.rows;
+    // If the activity is a removal, delete the previous activity instead of inserting a new one
+    if (activity === "REMOVED_FAVORITE") {
+      await db
+        .deleteFrom("activities")
+        .where("title_id", "=", title_id)
+        .where("user_id", "=", userEmail)
+        .where("activity", "=", "FAVORITED")
+        .execute();
+      
+      return { message: "Favorite activity removed" };
+    }
+
+    if (activity === "REMOVED_WATCH_LATER") {
+      await db
+        .deleteFrom("activities")
+        .where("title_id", "=", title_id)
+        .where("user_id", "=", userEmail)
+        .where("activity", "=", "WATCH_LATER")
+        .execute();
+      
+      return { message: "Watch Later activity removed" };
+    }
+
+    // If the activity is FAVORITED or WATCH LATER, proceed with insertion
+    await db
+      .insertInto("activities")
+      .values({ title_id, user_id: userEmail, activity, timestamp: new Date() })
+      .execute();
+
+    return { message: "Activity Logged" };
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add activity.");
+    throw new Error("Failed to log activity.");
   }
 }
