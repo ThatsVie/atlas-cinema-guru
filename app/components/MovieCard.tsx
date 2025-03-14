@@ -19,6 +19,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, toggleFavorite, toggleWatchLater }) => {
+  console.log("Rendering MovieCard:", movie);
   const [isFavorited, setIsFavorited] = useState(movie.favorited || false);
   const [isWatchLater, setIsWatchLater] = useState(movie.watchLater || false);
   const [isLoading, setIsLoading] = useState(false);

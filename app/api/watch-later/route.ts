@@ -3,16 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 /**
- * GET /api/titles
+ * GET /api/watch-later
  */
 export const GET = auth(async (req: NextRequest) => {
   const params = req.nextUrl.searchParams;
   const page = params.get("page") ? Number(params.get("page")) : 1;
-  const minYear = params.get("minYear") ? Number(params.get("minYear")) : 0;
-  const maxYear = params.get("maxYear")
-    ? Number(params.get("maxYear"))
-    : new Date().getFullYear();
-  const query = params.get("query") ?? "";
 
   //@ts-ignore
   if (!req.auth) {
@@ -26,7 +21,7 @@ export const GET = auth(async (req: NextRequest) => {
     user: { email }, //@ts-ignore
   } = req.auth;
 
-  const watchLater = await fetchWatchLaters(page, email);
+  const { watchLater, totalPages } = await fetchWatchLaters(page, email);
 
-  return NextResponse.json({ watchLater });
+  return NextResponse.json({ watchLater, totalPages });
 });

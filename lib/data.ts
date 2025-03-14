@@ -12,8 +12,10 @@ export async function fetchTitles(
   userEmail: string
 ) {
   try {
-    // Get favorites title ids
-    const favorites = (
+    const ITEMS_PER_PAGE = 6; // ✅ Matches frontend
+
+    // Fetch user's favorited and watch later movie IDs
+    const favoritedMovies = (
       await db
         .selectFrom("favorites")
         .select("title_id")
@@ -21,8 +23,7 @@ export async function fetchTitles(
         .execute()
     ).map((row) => row.title_id);
 
-    // Get watch later title ids
-    const watchLater = (
+    const watchLaterMovies = (
       await db
         .selectFrom("watchlater")
         .select("title_id")
@@ -30,15 +31,38 @@ export async function fetchTitles(
         .execute()
     ).map((row) => row.title_id);
 
-    // Build Query
+    // Get total count of movies that match the filters
+    let countQuery = db
+      .selectFrom("titles")
+      .select(({ fn }) => fn.count<number>("id").as("total"));
+
+    if (minYear > 0) {
+      countQuery = countQuery.where("titles.released", ">=", minYear);
+    }
+    if (maxYear <= new Date().getFullYear()) {
+      countQuery = countQuery.where("titles.released", "<=", maxYear);
+    }
+    if (query) {
+      countQuery = countQuery.where("titles.title", "ilike", `%${query}%`);
+    }
+    if (genres.length > 0) {
+      countQuery = countQuery.where("titles.genre", "in", genres);
+    }
+
+    const countResult = await countQuery.execute();
+    const totalTitles = countResult[0]?.total ?? 0;
+    const totalPages = Math.ceil(totalTitles / ITEMS_PER_PAGE);
+
+    console.log(`🔍 Debug: Total Titles = ${totalTitles}, Total Pages = ${totalPages}`);
+
+    // Get paginated movie list
     let queryBuilder = db
       .selectFrom("titles")
-      .selectAll("titles")
+      .selectAll()
       .orderBy("titles.title", "asc")
-      .limit(6) // Pagination limit
-      .offset((page - 1) * 6); // Pagination offset
+      .limit(ITEMS_PER_PAGE)
+      .offset((page - 1) * ITEMS_PER_PAGE);
 
-    // Apply filters if they exist
     if (minYear > 0) {
       queryBuilder = queryBuilder.where("titles.released", ">=", minYear);
     }
@@ -52,27 +76,32 @@ export async function fetchTitles(
       queryBuilder = queryBuilder.where("titles.genre", "in", genres);
     }
 
-    // Execute Query
     const titles = await queryBuilder.execute();
 
-    // Return results with additional fields
-    return titles.map((row) => ({
-      ...row,
-      favorited: favorites.includes(row.id),
-      watchLater: watchLater.includes(row.id),
-      image: `/images/${row.id}.webp`,
-    }));
+    return {
+      titles: titles.map((row) => ({
+        ...row,
+        favorited: favoritedMovies.includes(row.id),
+        watchLater: watchLaterMovies.includes(row.id),
+        image: `/images/${row.id}.webp`,
+      })),
+      totalPages,
+    };
   } catch (error) {
     console.error("Database Error - Failed to fetch titles:", error);
     throw new Error("Failed to fetch titles.");
   }
 }
 
+
 /**
  * Get a users favorites list.
  */
 export async function fetchFavorites(page: number, userEmail: string) {
   try {
+    const ITEMS_PER_PAGE = 6;
+
+    // Get watch later movie IDs
     const watchLater = (
       await db
         .selectFrom("watchlater")
@@ -81,22 +110,38 @@ export async function fetchFavorites(page: number, userEmail: string) {
         .execute()
     ).map((row) => row.title_id);
 
+    // Count total favorites
+    const countResult = await db
+      .selectFrom("favorites")
+      .select(({ fn }) => fn.count<number>("title_id").as("total"))
+      .where("favorites.user_id", "=", userEmail)
+      .execute();
+
+    const totalFavorites = countResult[0]?.total ?? 0;
+    const totalPages = Math.ceil(totalFavorites / ITEMS_PER_PAGE);
+
+    console.log(`Debug: Total Favorites = ${totalFavorites}, Total Pages = ${totalPages}`);
+
+    // Get paginated favorite movies
     const titles = await db
       .selectFrom("titles")
       .selectAll("titles")
       .innerJoin("favorites", "titles.id", "favorites.title_id")
       .where("favorites.user_id", "=", userEmail)
       .orderBy("titles.released", "asc")
-      .limit(6)
-      .offset((page - 1) * 6)
+      .limit(ITEMS_PER_PAGE)
+      .offset((page - 1) * ITEMS_PER_PAGE)
       .execute();
 
-    return titles.map((row) => ({
-      ...row,
-      favorited: true,
-      watchLater: watchLater.includes(row.id),
-      image: `/images/${row.id}.webp`,
-    }));
+    return {
+      favorites: titles.map((row) => ({
+        ...row,
+        favorited: true,
+        watchLater: watchLater.includes(row.id),
+        image: `/images/${row.id}.webp`,
+      })),
+      totalPages,
+    };
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch favorites.");
@@ -172,6 +217,9 @@ export async function favoriteExists(title_id: string, userEmail: string): Promi
  */
 export async function fetchWatchLaters(page: number, userEmail: string) {
   try {
+    const ITEMS_PER_PAGE = 6;
+
+    // Get favorite movie IDs
     const favorites = (
       await db
         .selectFrom("favorites")
@@ -180,25 +228,41 @@ export async function fetchWatchLaters(page: number, userEmail: string) {
         .execute()
     ).map((row) => row.title_id);
 
+    // Count total watch later movies
+    const countResult = await db
+      .selectFrom("watchlater")
+      .select(({ fn }) => fn.count<number>("title_id").as("total"))
+      .where("watchlater.user_id", "=", userEmail)
+      .execute();
+
+    const totalWatchLater = countResult[0]?.total ?? 0;
+    const totalPages = Math.ceil(totalWatchLater / ITEMS_PER_PAGE);
+
+    console.log(`Debug: Total Watch Later = ${totalWatchLater}, Total Pages = ${totalPages}`);
+
+    // Get paginated watch later movies
     const titles = await db
       .selectFrom("titles")
       .selectAll("titles")
       .innerJoin("watchlater", "titles.id", "watchlater.title_id")
       .where("watchlater.user_id", "=", userEmail)
       .orderBy("titles.released", "asc")
-      .limit(6)
-      .offset((page - 1) * 6)
+      .limit(ITEMS_PER_PAGE)
+      .offset((page - 1) * ITEMS_PER_PAGE)
       .execute();
 
-    return titles.map((row) => ({
-      ...row,
-      favorited: favorites.includes(row.id),
-      watchLater: true,
-      image: `/images/${row.id}.webp`,
-    }));
+    return {
+      watchLater: titles.map((row) => ({
+        ...row,
+        favorited: favorites.includes(row.id),
+        watchLater: true,
+        image: `/images/${row.id}.webp`,
+      })),
+      totalPages,
+    };
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch watchLater.");
+    throw new Error("Failed to fetch watch later movies.");
   }
 }
 
@@ -345,7 +409,7 @@ export async function insertActivity(
       return { message: "Watch Later activity removed" };
     }
 
-    // If the activity is FAVORITED or WATCH LATER, proceed with insertion
+    // If the activity is FAVORITED or WATCH_LATER", proceed with insertion
     await db
       .insertInto("activities")
       .values({ title_id, user_id: userEmail, activity, timestamp: new Date() })

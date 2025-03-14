@@ -29,8 +29,11 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const titles = await fetchTitles(page, minYear, maxYear, query, genres, email);
-    return NextResponse.json({ titles });
+    const { titles, totalPages } = await fetchTitles(page, minYear, maxYear, query, genres, email);
+
+    console.log("API Response Sent:", { titles, totalPages });
+
+    return NextResponse.json({ titles, totalPages });
   } catch (error) {
     console.error("Database Error - Failed to fetch titles:", error);
     return NextResponse.json(

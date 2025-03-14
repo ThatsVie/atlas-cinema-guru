@@ -12,6 +12,8 @@ interface Movie {
   released: number;
   genre: string;
   image: string;
+  favorited?: boolean;
+  watchLater?: boolean;
 }
 
 export default function Page() {
@@ -21,9 +23,6 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const itemsPerPage = 9;
-
-  // state to hold filter options
   const [filters, setFilters] = useState({
     search: '',
     minYear: '',
@@ -31,13 +30,12 @@ export default function Page() {
     genres: [] as string[],
   });
 
-  // Fetch movies based on filters
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
         setError(null);
-
+  
         const params = new URLSearchParams({
           page: currentPage.toString(),
           ...(filters.search && { query: filters.search }),
@@ -46,14 +44,37 @@ export default function Page() {
           ...(filters.genres.length > 0 && { genres: filters.genres.join(',') }),
         });
 
+        console.log("Fetching movies with params:", params.toString());
+  
         const response = await fetch(`/api/titles?${params.toString()}`);
         if (!response.ok) {
           throw new Error(`API error: ${response.status} - ${await response.text()}`);
         }
 
         const data = await response.json();
-        setMovies(data.titles || []);
-        setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
+        console.log("API Response:", data);
+  
+        // response has the expected structure
+        if (!data.titles || !Array.isArray(data.titles)) {
+          throw new Error("API response does not contain a valid 'titles' array");
+        }
+
+        // totalPages is included in API response
+        if (typeof data.totalPages !== "number") {
+          console.error("API response is missing totalPages");
+        }
+
+        setMovies(data.titles.map((movie: Movie) => ({
+          ...movie,
+          favorited: movie.favorited ?? false,
+          watchLater: movie.watchLater ?? false,
+        })));
+
+        setTotalPages(data.totalPages ?? 1);
+  
+        console.log("Movies updated:", data.titles);
+        console.log("Total Pages:", data.totalPages);
+        
       } catch (err) {
         console.error('Error fetching movies:', err);
         setError(err instanceof Error ? err.message : 'Failed to load movies.');
@@ -61,7 +82,7 @@ export default function Page() {
         setIsLoading(false);
       }
     };
-
+  
     fetchMovies();
   }, [filters, currentPage]);
 

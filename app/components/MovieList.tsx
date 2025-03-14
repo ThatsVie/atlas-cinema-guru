@@ -18,7 +18,9 @@ interface MovieListProps {
   toggleWatchLater?: (movieId: string) => void;
 }
 
-const MovieList: React.FC<MovieListProps> = ({ movies, toggleFavorite, toggleWatchLater }) => {
+const MovieList: React.FC<MovieListProps> = ({ movies = [], toggleFavorite, toggleWatchLater }) => {
+  console.log("Movies received by MovieList:", movies);
+
   return (
     <section
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 mx-5 md:mx-10"
@@ -50,5 +52,6 @@ const MovieList: React.FC<MovieListProps> = ({ movies, toggleFavorite, toggleWat
     </section>
   );
 };
+
 
 export default MovieList;

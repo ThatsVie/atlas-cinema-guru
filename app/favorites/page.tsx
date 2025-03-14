@@ -11,6 +11,7 @@ interface Movie {
   released: number;
   genre: string;
   favorited?: boolean;
+  watchLater?: boolean;
 }
 
 export default function FavoritesPage() {
@@ -20,22 +21,22 @@ export default function FavoritesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const itemsPerPage = 9;
-
-  // Fetch user's favorite movies
   const fetchFavorites = async (page: number) => {
     try {
       setIsLoading(true);
       setError(null);
+
       const response = await fetch(`/api/favorites?page=${page}`);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
+
       const data = await response.json();
+      console.log(`Favorites API Response:`, data);
 
       if (data.favorites) {
         setFavorites(data.favorites);
-        setTotalPages(Math.ceil(data.favorites.length / itemsPerPage));
+        setTotalPages(data.totalPages || 1);
       } else {
         setFavorites([]);
         setTotalPages(1);
@@ -56,11 +57,41 @@ export default function FavoritesPage() {
     setCurrentPage(newPage);
   }, []);
 
-  const toggleFavorite = useCallback((movieId: string) => {
-    setFavorites((prevFavorites) =>
-      prevFavorites.filter((movie) => movie.id !== movieId)
-    );
+  const toggleFavorite = useCallback(async (movieId: string) => {
+    try {
+      const response = await fetch(`/api/favorites/${movieId}`, { method: 'DELETE' });
+      if (!response.ok) {
+        throw new Error('Failed to remove favorite.');
+      }
+      setFavorites((prevFavorites) =>
+        prevFavorites.filter((movie) => movie.id !== movieId)
+      );
+    } catch (err) {
+      console.error('Error removing favorite:', err);
+    }
   }, []);
+
+  const toggleWatchLater = useCallback(async (movieId: string) => {
+    try {
+      const movie = favorites.find((m) => m.id === movieId);
+      if (!movie) return;
+
+      const isInWatchLater = movie.watchLater;
+      const method = isInWatchLater ? 'DELETE' : 'POST';
+      const response = await fetch(`/api/watch-later/${movieId}`, { method });
+      if (!response.ok) {
+        throw new Error(`Failed to ${isInWatchLater ? 'remove from' : 'add to'} Watch Later.`);
+      }
+
+      setFavorites((prevFavorites) =>
+        prevFavorites.map((m) =>
+          m.id === movieId ? { ...m, watchLater: !isInWatchLater } : m
+        )
+      );
+    } catch (err) {
+      console.error('Error toggling watch later:', err);
+    }
+  }, [favorites]);
 
   return (
     <main aria-labelledby="favorites-title">
@@ -75,8 +106,9 @@ export default function FavoritesPage() {
           <p className="text-red-500 text-lg font-semibold" role="alert">{error}</p>
         ) : favorites.length > 0 ? (
           <MovieList
-            movies={favorites.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
+            movies={favorites}
             toggleFavorite={toggleFavorite}
+            toggleWatchLater={toggleWatchLater}
           />
         ) : (
           <p className="text-white text-lg font-semibold" role="alert">No favorite movies found.</p>

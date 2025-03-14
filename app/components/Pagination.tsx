@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }: { currentPage: number, totalPages: number, onPageChange: (page: number) => void }) => {
   const isPreviousDisabled = currentPage === 1;
-  const isNextDisabled = currentPage === totalPages;
+  const isNextDisabled = currentPage >= totalPages;
 
   const handlePrevious = useCallback(() => {
     if (!isPreviousDisabled) {
