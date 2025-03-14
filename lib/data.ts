@@ -12,7 +12,7 @@ export async function fetchTitles(
   userEmail: string
 ) {
   try {
-    const ITEMS_PER_PAGE = 6; // ✅ Matches frontend
+    const ITEMS_PER_PAGE = 6; 
 
     // Fetch user's favorited and watch later movie IDs
     const favoritedMovies = (
@@ -53,7 +53,7 @@ export async function fetchTitles(
     const totalTitles = countResult[0]?.total ?? 0;
     const totalPages = Math.ceil(totalTitles / ITEMS_PER_PAGE);
 
-    console.log(`🔍 Debug: Total Titles = ${totalTitles}, Total Pages = ${totalPages}`);
+    console.log(`Debug: Total Titles = ${totalTitles}, Total Pages = ${totalPages}`);
 
     // Get paginated movie list
     let queryBuilder = db
@@ -92,7 +92,6 @@ export async function fetchTitles(
     throw new Error("Failed to fetch titles.");
   }
 }
-
 
 /**
  * Get a users favorites list.
