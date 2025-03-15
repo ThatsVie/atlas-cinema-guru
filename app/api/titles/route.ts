@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   if (!session?.user?.email) {
     return NextResponse.json(
       { error: "Unauthorized - Not logged in" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -22,23 +22,35 @@ export async function GET(req: NextRequest) {
   const minYear = Number(params.get("minYear")) || 0;
   const maxYear = Number(params.get("maxYear")) || new Date().getFullYear();
   const query = params.get("query")?.trim() ?? "";
-  const genres = params.get("genres")?.split(",").map(g => g.trim()) ?? [];
+  const genres =
+    params
+      .get("genres")
+      ?.split(",")
+      .map((g) => g.trim()) ?? [];
 
   if (isNaN(page) || isNaN(minYear) || isNaN(maxYear)) {
-    return NextResponse.json({ error: "Invalid query parameters" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid query parameters" },
+      { status: 400 },
+    );
   }
 
   try {
-    const { titles, totalPages } = await fetchTitles(page, minYear, maxYear, query, genres, email);
-
-    console.log("API Response Sent:", { titles, totalPages });
+    const { titles, totalPages } = await fetchTitles(
+      page,
+      minYear,
+      maxYear,
+      query,
+      genres,
+      email,
+    );
 
     return NextResponse.json({ titles, totalPages });
   } catch (error) {
     console.error("Database Error - Failed to fetch titles:", error);
     return NextResponse.json(
       { error: "Failed to fetch titles" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

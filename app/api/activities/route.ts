@@ -3,17 +3,14 @@ import { fetchActivities } from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * GET /api/activities
+ * GET /api/activities - Fetches paginated user activities.
  */
 export const GET = auth(async (req: NextRequest) => {
-  const params = req.nextUrl.searchParams;
-  const page = params.get("page") ? Number(params.get("page")) : 1;
-
   //@ts-ignore
   if (!req.auth) {
     return NextResponse.json(
       { error: "Unauthorized - Not logged in" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -21,6 +18,6 @@ export const GET = auth(async (req: NextRequest) => {
     user: { email }, //@ts-ignore
   } = req.auth;
 
-  const activities = await fetchActivities(page, email);
+  const activities = await fetchActivities(email, 6);
   return NextResponse.json({ activities });
 });

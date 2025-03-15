@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import MovieCard from './MovieCard';
+import MovieCard from "./MovieCard";
 
 interface Movie {
   id: string;
@@ -18,7 +18,11 @@ interface MovieListProps {
   toggleWatchLater?: (movieId: string) => void;
 }
 
-const MovieList: React.FC<MovieListProps> = ({ movies = [], toggleFavorite, toggleWatchLater }) => {
+const MovieList: React.FC<MovieListProps> = ({
+  movies = [],
+  toggleFavorite,
+  toggleWatchLater,
+}) => {
   console.log("Movies received by MovieList:", movies);
 
   return (
@@ -27,7 +31,9 @@ const MovieList: React.FC<MovieListProps> = ({ movies = [], toggleFavorite, togg
       aria-labelledby="movie-list-heading"
       role="list"
     >
-      <h2 id="movie-list-heading" className="sr-only">Movie List</h2>
+      <h2 id="movie-list-heading" className="sr-only">
+        Movie List
+      </h2>
 
       {movies.length > 0 ? (
         movies.map((movie) => (
@@ -52,6 +58,5 @@ const MovieList: React.FC<MovieListProps> = ({ movies = [], toggleFavorite, togg
     </section>
   );
 };
-
 
 export default MovieList;

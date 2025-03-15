@@ -13,7 +13,7 @@ export const GET = auth(async (req: NextRequest) => {
   if (!req.auth) {
     return NextResponse.json(
       { error: "Unauthorized - Not logged in" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 

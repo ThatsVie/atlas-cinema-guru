@@ -9,10 +9,10 @@ export async function fetchTitles(
   maxYear: number,
   query: string,
   genres: string[],
-  userEmail: string
+  userEmail: string,
 ) {
   try {
-    const ITEMS_PER_PAGE = 6; 
+    const ITEMS_PER_PAGE = 6;
 
     // Fetch user's favorited and watch later movie IDs
     const favoritedMovies = (
@@ -52,8 +52,6 @@ export async function fetchTitles(
     const countResult = await countQuery.execute();
     const totalTitles = countResult[0]?.total ?? 0;
     const totalPages = Math.ceil(totalTitles / ITEMS_PER_PAGE);
-
-    console.log(`Debug: Total Titles = ${totalTitles}, Total Pages = ${totalPages}`);
 
     // Get paginated movie list
     let queryBuilder = db
@@ -119,8 +117,6 @@ export async function fetchFavorites(page: number, userEmail: string) {
     const totalFavorites = countResult[0]?.total ?? 0;
     const totalPages = Math.ceil(totalFavorites / ITEMS_PER_PAGE);
 
-    console.log(`Debug: Total Favorites = ${totalFavorites}, Total Pages = ${totalPages}`);
-
     // Get paginated favorite movies
     const titles = await db
       .selectFrom("titles")
@@ -152,7 +148,10 @@ export async function fetchFavorites(page: number, userEmail: string) {
  */
 export async function insertFavorite(title_id: string, userEmail: string) {
   try {
-    await db.insertInto("favorites").values({ title_id, user_id: userEmail }).execute();
+    await db
+      .insertInto("favorites")
+      .values({ title_id, user_id: userEmail })
+      .execute();
     await insertActivity(title_id, userEmail, "FAVORITED");
     return { message: "Favorite Added" };
   } catch (error) {
@@ -174,10 +173,12 @@ export async function deleteFavorite(title_id: string, userEmail: string) {
       .execute();
 
     if (result.length === 0) {
-      throw new Error("Favorite not found or already removed");
+      return {
+        message: "Favorite not found or already removed",
+        success: false,
+      };
     }
 
-    // delete the previous entry in activities
     await db
       .deleteFrom("activities")
       .where("title_id", "=", title_id)
@@ -185,17 +186,20 @@ export async function deleteFavorite(title_id: string, userEmail: string) {
       .where("activity", "=", "FAVORITED")
       .execute();
 
-    return result;
+    return { message: "Favorite removed successfully", success: true };
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to delete favorite.");
+    console.error("Database Error - Failed to delete favorite:", error);
+    return { error: "Failed to delete favorite.", success: false };
   }
 }
 
 /**
  * Check if a title is in a users favorites list.
  */
-export async function favoriteExists(title_id: string, userEmail: string): Promise<boolean> {
+export async function favoriteExists(
+  title_id: string,
+  userEmail: string,
+): Promise<boolean> {
   try {
     const data = await db
       .selectFrom("favorites")
@@ -237,8 +241,6 @@ export async function fetchWatchLaters(page: number, userEmail: string) {
     const totalWatchLater = countResult[0]?.total ?? 0;
     const totalPages = Math.ceil(totalWatchLater / ITEMS_PER_PAGE);
 
-    console.log(`Debug: Total Watch Later = ${totalWatchLater}, Total Pages = ${totalPages}`);
-
     // Get paginated watch later movies
     const titles = await db
       .selectFrom("titles")
@@ -270,7 +272,10 @@ export async function fetchWatchLaters(page: number, userEmail: string) {
  */
 export async function insertWatchLater(title_id: string, userEmail: string) {
   try {
-    await db.insertInto("watchlater").values({ title_id, user_id: userEmail }).execute();
+    await db
+      .insertInto("watchlater")
+      .values({ title_id, user_id: userEmail })
+      .execute();
     await insertActivity(title_id, userEmail, "WATCH_LATER");
     return { message: "Added to Watch Later" };
   } catch (error) {
@@ -292,7 +297,10 @@ export async function deleteWatchLater(title_id: string, userEmail: string) {
       .execute();
 
     if (result.length === 0) {
-      throw new Error("Watch Later entry not found or already removed");
+      return {
+        message: "Watch Later entry not found or already removed",
+        success: false,
+      };
     }
 
     await db
@@ -302,10 +310,10 @@ export async function deleteWatchLater(title_id: string, userEmail: string) {
       .where("activity", "=", "WATCH_LATER")
       .execute();
 
-    return result;
+    return { message: "Removed from Watch Later", success: true };
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to remove watch later entry.");
+    console.error("Database Error - Failed to remove watch later:", error);
+    return { error: "Failed to remove watch later.", success: false };
   }
 }
 
@@ -314,14 +322,14 @@ export async function deleteWatchLater(title_id: string, userEmail: string) {
  */
 export async function watchLaterExists(
   title_id: string,
-  userEmail: string
+  userEmail: string,
 ): Promise<boolean> {
   try {
     const data = await db
-      .selectFrom('watchlater')
-      .select('title_id')
-      .where('title_id', '=', title_id)
-      .where('user_id', '=', userEmail)
+      .selectFrom("watchlater")
+      .select("title_id")
+      .where("title_id", "=", title_id)
+      .where("user_id", "=", userEmail)
       .execute();
 
     return data.length > 0;
@@ -349,10 +357,7 @@ export async function fetchGenres(): Promise<string[]> {
   }
 }
 
-/**
- * Get a users favorites list.
- */
-export async function fetchActivities(page: number, userEmail: string) {
+export async function fetchActivities(userEmail: string, limit: number = 6) {
   try {
     const activities = await db
       .selectFrom("activities")
@@ -365,14 +370,13 @@ export async function fetchActivities(page: number, userEmail: string) {
       ])
       .where("activities.user_id", "=", userEmail)
       .orderBy("activities.timestamp", "desc")
-      .limit(10)
-      .offset((page - 1) * 10)
+      .limit(limit)
       .execute();
 
     return activities;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch favorites.");
+    throw new Error("Failed to fetch activities.");
   }
 }
 
@@ -382,10 +386,13 @@ export async function fetchActivities(page: number, userEmail: string) {
 export async function insertActivity(
   title_id: string,
   userEmail: string,
-  activity: "FAVORITED" | "WATCH_LATER" | "REMOVED_FAVORITE" | "REMOVED_WATCH_LATER"
+  activity:
+    | "FAVORITED"
+    | "WATCH_LATER"
+    | "REMOVED_FAVORITE"
+    | "REMOVED_WATCH_LATER",
 ) {
   try {
-    // If the activity is a removal, delete the previous activity instead of inserting a new one
     if (activity === "REMOVED_FAVORITE") {
       await db
         .deleteFrom("activities")
@@ -393,8 +400,8 @@ export async function insertActivity(
         .where("user_id", "=", userEmail)
         .where("activity", "=", "FAVORITED")
         .execute();
-      
-      return { message: "Favorite activity removed" };
+
+      return { message: "Favorite activity removed", success: true };
     }
 
     if (activity === "REMOVED_WATCH_LATER") {
@@ -404,19 +411,18 @@ export async function insertActivity(
         .where("user_id", "=", userEmail)
         .where("activity", "=", "WATCH_LATER")
         .execute();
-      
-      return { message: "Watch Later activity removed" };
+
+      return { message: "Watch Later activity removed", success: true };
     }
 
-    // If the activity is FAVORITED or WATCH_LATER", proceed with insertion
     await db
       .insertInto("activities")
       .values({ title_id, user_id: userEmail, activity, timestamp: new Date() })
       .execute();
 
-    return { message: "Activity Logged" };
+    return { message: "Activity Logged", success: true };
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to log activity.");
+    console.error("Database Error - Failed to log activity:", error);
+    return { error: "Failed to log activity.", success: false };
   }
 }

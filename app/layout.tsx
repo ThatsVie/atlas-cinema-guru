@@ -6,13 +6,13 @@ import "./global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full flex flex-col">
+    <html lang="en" className="h-full overflow-hidden" suppressHydrationWarning>
+      <body className="h-full flex flex-col overflow-hidden">
         <SessionProvider>
-          {/* Skip Link for Better Keyboard Navigation */}
+          {/* Skip Link for Accessibility */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only absolute top-2 left-2 bg-white text-blue px-3 py-2 rounded-md"
+            className="sr-only focus:not-sr-only absolute top-2 left-2 bg-white text-midnightBlue px-3 py-2 rounded-md"
           >
             Skip to main content
           </a>
@@ -20,13 +20,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Header />
 
           {/* Layout Wrapper */}
-          <div className="flex flex-grow min-h-screen bg-blue">
+          <div className="flex flex-grow min-h-screen bg-midnightBlue">
             {/* Sidebar Navigation */}
-            <aside className="w-20 md:w-64 h-screen flex-shrink-0">
+            <aside className="h-screen flex-shrink-0">
               <DashboardSidebar />
             </aside>
 
-            {/* Main */}
+            {/* Main Content */}
             <main
               id="main-content"
               className="flex-grow h-screen overflow-y-auto"
@@ -40,4 +40,4 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </body>
     </html>
   );
-}  
+}
