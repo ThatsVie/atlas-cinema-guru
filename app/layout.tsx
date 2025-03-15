@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {/* Layout Wrapper: Mobile Stack, Sidebar in Desktop */}
           <div className="flex flex-col md:flex-row flex-grow bg-midnightBlue min-h-screen">
             {/* Dashboard (Below header in mobile, sidebar in desktop) */}
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto md:min-h-screen">
               <DashboardSidebar />
             </div>
 
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               aria-labelledby="page-title"
             >
               <h1 id="page-title" className="sr-only">
-                Cinema Guru - Movie Browser
+                Cinema Guru
               </h1>
               {children}
             </main>
