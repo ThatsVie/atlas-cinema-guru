@@ -26,25 +26,24 @@ const MovieList: React.FC<MovieListProps> = ({
   console.log("Movies received by MovieList:", movies);
 
   return (
-    <section
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 mx-5 md:mx-10"
-      aria-labelledby="movie-list-heading"
-      role="list"
-    >
+    <section className="mx-5 md:mx-10" aria-labelledby="movie-list-heading">
+      {/* Hidden heading for screen readers */}
       <h2 id="movie-list-heading" className="sr-only">
         Movie List
       </h2>
 
       {movies.length > 0 ? (
-        movies.map((movie) => (
-          <div key={movie.id} role="listitem">
-            <MovieCard
-              movie={movie}
-              toggleFavorite={toggleFavorite}
-              toggleWatchLater={toggleWatchLater}
-            />
-          </div>
-        ))
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7" role="list">
+          {movies.map((movie) => (
+            <li key={movie.id} role="listitem">
+              <MovieCard
+                movie={movie}
+                toggleFavorite={toggleFavorite}
+                toggleWatchLater={toggleWatchLater}
+              />
+            </li>
+          ))}
+        </ul>
       ) : (
         <p
           className="text-teal py-10 text-lg font-semibold ps-2"

@@ -6,26 +6,29 @@ const Header = async () => {
   const session = await auth();
 
   return (
-    <header className="bg-mintyTeal h-[8dvh] w-full flex items-center justify-between px-6 text-midnightBlue">
-      <div className="flex items-center">
+    <header className="bg-mintyTeal h-[10dvh] md:h-[12dvh] w-full flex items-center justify-between px-4 md:px-6 text-midnightBlue shadow-md">
+      {/* Left Section: Logo & Title */}
+      <div className="flex items-center space-x-2">
         <Image
           src="/assets/film.svg"
           alt="Cinema Guru Logo"
-          width={32}
-          height={32}
+          width={36}
+          height={36}
           priority
         />
-        <h1 className="text-xl md:text-2xl font-bold ml-2">Cinema Guru</h1>
+        <h1 className="text-lg md:text-2xl font-bold">Cinema Guru</h1>
       </div>
 
-      {/* Welcome message and Logout on right side */}
+      {/* Right Section: Email (Desktop Only) & Logout Button */}
       <div className="flex items-center space-x-4">
         {session?.user ? (
           <>
-            <span className="sr-only">User is logged in</span>
-            <span aria-live="polite">
-              Welcome, {session.user.email} {/* Always show email */}
+            {/* Hide Email on Mobile, Show on Desktop */}
+            <span className="hidden md:inline" aria-live="polite">
+              Welcome, {session.user.email}
             </span>
+
+            {/* Logout Button */}
             <form
               action={async () => {
                 "use server";
@@ -34,11 +37,11 @@ const Header = async () => {
             >
               <button
                 type="submit"
-                className="flex items-center space-x-2 text-midnightBlue-500 hover:text-midnightBlue-700 transition"
+                className="flex items-center space-x-2 text-midnightBlue-500 hover:text-midnightBlue-700 transition focus:ring-2 focus:ring-midnightBlue-300 rounded-md px-3 py-2"
                 aria-label="Logout"
               >
-                <FiLogOut className="h-5 w-5" />
-                <span className="hidden sm:inline">Logout</span>
+                <FiLogOut className="h-6 w-6" />
+                <span className="hidden sm:inline text-sm">Logout</span>
               </button>
             </form>
           </>

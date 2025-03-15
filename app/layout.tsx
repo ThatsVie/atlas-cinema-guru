@@ -6,7 +6,15 @@ import "./global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="h-full overflow-hidden" suppressHydrationWarning>
+    <html lang="en" dir="ltr" className="h-full overflow-hidden" suppressHydrationWarning>
+      <head>
+        <title>Cinema Guru</title>
+        <meta
+          name="description"
+          content="Discover movies, save them to your watchlist, and mark your favorites with Cinema Guru."
+        />
+      </head>
+
       <body className="h-full flex flex-col overflow-hidden">
         <SessionProvider>
           {/* Skip Link for Accessibility */}
@@ -19,20 +27,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
           <Header />
 
-          {/* Layout Wrapper */}
-          <div className="flex flex-grow min-h-screen bg-midnightBlue">
-            {/* Sidebar Navigation */}
-            <aside className="h-screen flex-shrink-0">
+          {/* Layout Wrapper: Mobile Stack, Sidebar in Desktop */}
+          <div className="flex flex-col md:flex-row flex-grow min-h-screen bg-midnightBlue">
+            {/* Dashboard (Below header in mobile, sidebar in desktop) */}
+            <div className="w-full md:w-auto">
               <DashboardSidebar />
-            </aside>
+            </div>
 
             {/* Main Content */}
             <main
               id="main-content"
-              className="flex-grow h-screen overflow-y-auto"
+              className="flex-grow h-screen overflow-y-auto px-4 md:px-6"
               role="main"
               aria-labelledby="page-title"
             >
+              <h1 id="page-title" className="sr-only">
+                Cinema Guru - Movie Browser
+              </h1>
               {children}
             </main>
           </div>

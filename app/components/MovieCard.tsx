@@ -70,10 +70,11 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
   return (
     <div
-      className="relative group border-teal border-2 rounded-lg overflow-hidden h-[45vh] focus-within:ring-2 focus-within:ring-midnightBlue-300"
+      className="relative group border-teal border-2 rounded-lg overflow-hidden h-[50vh] focus-within:ring-2 focus-within:ring-midnightBlue-300"
       tabIndex={0}
       aria-labelledby={`movie-title-${movie.id}`}
     >
+      {/* Movie Image */}
       <div
         className="h-full w-full bg-cover bg-no-repeat bg-center"
         style={{ backgroundImage: `url(${imageUrl})` }}
@@ -81,8 +82,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
         aria-label={`Poster of ${movie.title}`}
       ></div>
 
-      {/* Favorite & Watch Later Buttons on Hover */}
-      <div className="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out">
+      {/* Favorite & Watch Later Buttons */}
+      <div className="absolute top-3 right-3 flex space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 ease-in-out">
         <button
           className={`h-6 w-6 focus:outline-none focus:ring-2 focus:ring-midnightBlue-300 ${
             isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
@@ -122,15 +123,29 @@ const MovieCard: React.FC<MovieCardProps> = ({
         </button>
       </div>
 
-      {/* Movie Details on Hover */}
+      {/* Movie Details */}
       <div
-        className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-[40%] lg:group-hover:h-[47%] group-hover:opacity-100 transition-all duration-500 ease-in-out bg-navy bg-opacity-75 p-4"
+        className="absolute bottom-0 left-0 w-full bg-navy bg-opacity-75 p-4
+        md:h-0 md:opacity-0 md:group-hover:h-[40%] md:group-hover:opacity-100 transition-all duration-500 ease-in-out"
         aria-hidden="true"
       >
         <h3
           id={`movie-title-${movie.id}`}
           className="text-lg font-semibold text-white"
         >
+          {movie.title} ({movie.released})
+        </h3>
+        <p className="text-sm text-white">{movie.synopsis}</p>
+        <div className="flex flex-wrap gap-2 mt-2">
+          <span className="bg-teal text-midnightBlue px-2 py-1 rounded-full text-xs">
+            {movie.genre}
+          </span>
+        </div>
+      </div>
+
+      {/* Movie Details Always Visible in Mobile */}
+      <div className="block md:hidden absolute bottom-0 left-0 w-full bg-navy bg-opacity-75 p-4">
+        <h3 className="text-lg font-semibold text-white">
           {movie.title} ({movie.released})
         </h3>
         <p className="text-sm text-white">{movie.synopsis}</p>
