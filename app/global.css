@@ -5,6 +5,12 @@
 html, body {
   height: auto;
   min-height: 100vh;
-  overflow-y: hidden;
+  overflow-x: hidden;
   background-color: #00003c;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
