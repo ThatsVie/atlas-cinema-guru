@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
 
-      <body className="h-full flex flex-col overflow-hidden">
+      <body className="h-full flex flex-col">
         <SessionProvider>
           {/* Skip Link for Accessibility */}
           <a
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Header />
 
           {/* Layout Wrapper: Mobile Stack, Sidebar in Desktop */}
-          <div className="flex flex-col md:flex-row flex-grow min-h-screen bg-midnightBlue">
+          <div className="flex flex-col md:flex-row flex-grow bg-midnightBlue min-h-full">
             {/* Dashboard (Below header in mobile, sidebar in desktop) */}
             <div className="w-full md:w-auto">
               <DashboardSidebar />
