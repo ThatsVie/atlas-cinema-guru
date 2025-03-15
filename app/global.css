@@ -2,15 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  height: auto;
-  min-height: 100vh;
+html {
+  min-height: 100%;
   overflow-x: hidden;
   background-color: #00003c;
 }
 
 body {
+  min-height: 100vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
 }

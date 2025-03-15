@@ -6,7 +6,7 @@ import "./global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" className="h-full overflow-hidden" suppressHydrationWarning>
+    <html lang="en" dir="ltr" className="overflow-x-hidden" suppressHydrationWarning>
       <head>
         <title>Cinema Guru</title>
         <meta
@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
 
-      <body className="h-full flex flex-col">
+      <body className="min-h-screen flex flex-col">
         <SessionProvider>
           {/* Skip Link for Accessibility */}
           <a
