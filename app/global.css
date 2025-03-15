@@ -3,15 +3,8 @@
 @tailwind utilities;
 
 html, body {
-  min-height: 100%;
   height: auto;
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-y: auto; 
+  background-color: #00003c;
 }
