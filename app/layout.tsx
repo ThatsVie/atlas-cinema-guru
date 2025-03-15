@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {/* Main Content */}
             <main
               id="main-content"
-              className="flex-grow overflow-y-auto px-4 md:px-6 min-h-[calc(100vh-8dvh)] bg-midnightBlue"
+              className="flex-grow h-auto overflow-y-auto px-4 md:px-6 bg-midnightBlue"
               role="main"
               aria-labelledby="page-title"
             >
