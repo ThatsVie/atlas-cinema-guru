@@ -51,7 +51,7 @@ export default function Page() {
         const response = await fetch(`/api/titles?${params.toString()}`);
         if (!response.ok) {
           throw new Error(
-            `API error: ${response.status} - ${await response.text()}`
+            `API error: ${response.status} - ${await response.text()}`,
           );
         }
 
@@ -59,7 +59,7 @@ export default function Page() {
 
         if (!data.titles || !Array.isArray(data.titles)) {
           throw new Error(
-            "API response does not contain a valid 'titles' array"
+            "API response does not contain a valid 'titles' array",
           );
         }
 
@@ -72,7 +72,7 @@ export default function Page() {
             ...movie,
             favorited: movie.favorited ?? false,
             watchLater: movie.watchLater ?? false,
-          }))
+          })),
         );
 
         setTotalPages(data.totalPages ?? 1);
@@ -100,7 +100,7 @@ export default function Page() {
       setFilters(newFilters);
       setCurrentPage(1);
     },
-    []
+    [],
   );
 
   return (
@@ -136,14 +136,11 @@ export default function Page() {
         )}
       </section>
 
-      {/* Ensures pagination is always visible */}
-      <div className="w-full min-h-[15vh] flex justify-center">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </main>
   );
 }
