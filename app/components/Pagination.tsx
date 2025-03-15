@@ -28,7 +28,7 @@ const Pagination = ({
 
   return (
     <nav
-      className="flex items-center justify-center gap-2 my-5 py-5 min-h-[60px]"
+      className="flex items-center justify-center gap-2 my-5 py-5 min-h-[80px] md:min-h-[60px]"
       aria-label="Pagination Navigation"
     >
       {/* Previous Button */}

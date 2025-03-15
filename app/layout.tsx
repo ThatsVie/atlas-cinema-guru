@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Header />
 
           {/* Layout Wrapper: Mobile Stack, Sidebar in Desktop */}
-          <div className="flex flex-col md:flex-row flex-grow bg-midnightBlue min-h-full">
+          <div className="flex flex-col md:flex-row flex-grow bg-midnightBlue min-h-screen">
             {/* Dashboard (Below header in mobile, sidebar in desktop) */}
             <div className="w-full md:w-auto">
               <DashboardSidebar />
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {/* Main Content */}
             <main
               id="main-content"
-              className="flex-grow min-h-screen overflow-y-auto px-4 md:px-6"
+              className="flex-grow overflow-y-auto px-4 md:px-6 min-h-[calc(100vh-8dvh)]"
               role="main"
               aria-labelledby="page-title"
             >
