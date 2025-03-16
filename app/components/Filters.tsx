@@ -41,12 +41,12 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
     });
   }, [search, minYear, maxYear, selectedGenres, onFiltersChange]);
 
-  // Handle genre selection
+  // Handle genre
   const toggleGenre = (genre: string) => {
     setSelectedGenres((prevSelected) =>
       prevSelected.includes(genre)
         ? prevSelected.filter((g) => g !== genre)
-        : [...prevSelected, genre]
+        : [...prevSelected, genre],
     );
   };
 
@@ -134,7 +134,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           Genres
         </legend>
 
-        <div className="flex flex-wrap justify-center md:justify-start gap-3 max-w-[400px] md:max-w-none">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {allGenres.map((genre) => (
             <button
               key={genre}
