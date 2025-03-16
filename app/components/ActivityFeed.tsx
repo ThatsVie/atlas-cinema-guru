@@ -53,7 +53,10 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ refreshTrigger }) => {
       </h2>
 
       {loading ? (
-        <p className="text-midnightBlue text-md font-medium px-2" aria-busy="true">
+        <p
+          className="text-midnightBlue text-md font-medium px-2"
+          aria-busy="true"
+        >
           Loading activities...
         </p>
       ) : error ? (

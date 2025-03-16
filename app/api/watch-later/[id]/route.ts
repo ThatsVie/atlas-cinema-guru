@@ -1,5 +1,7 @@
 import {
-  deleteWatchLater, watchLaterExists, insertWatchLater,
+  deleteWatchLater,
+  watchLaterExists,
+  insertWatchLater,
 } from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";

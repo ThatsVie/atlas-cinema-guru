@@ -6,7 +6,12 @@ import "./global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" className="overflow-x-hidden" suppressHydrationWarning>
+    <html
+      lang="en"
+      dir="ltr"
+      className="overflow-x-hidden"
+      suppressHydrationWarning
+    >
       <head>
         <title>Cinema Guru</title>
         <meta
