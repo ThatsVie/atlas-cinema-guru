@@ -60,12 +60,14 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
       </h2>
 
       {/* Left Side: Search and Min/Max Year */}
-      <div className="flex flex-col md:flex-row md:items-center md:gap-6 w-full">
+      <fieldset className="w-auto flex flex-col space-y-3">
+        <legend className="sr-only">Search and Year Filters</legend>
+
         {/* Search Input */}
-        <div className="flex flex-col">
+        <div>
           <label
             htmlFor="search-input"
-            className="block text-lg text-white font-semibold md:text-right md:w-24"
+            className="block text-lg text-white font-semibold mb-1"
           >
             Search
           </label>
@@ -81,11 +83,11 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
         </div>
 
         {/* Min/Max Year Inputs */}
-        <div className="flex gap-4 mt-4 md:mt-0">
+        <div className="flex gap-4">
           <div className="w-36">
             <label
               htmlFor="min-year-input"
-              className="block text-lg text-white font-semibold"
+              className="block text-lg text-white font-semibold mb-1"
             >
               Min Year
             </label>
@@ -103,7 +105,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           <div className="w-36">
             <label
               htmlFor="max-year-input"
-              className="block text-lg text-white font-semibold"
+              className="block text-lg text-white font-semibold mb-1"
             >
               Max Year
             </label>
@@ -118,16 +120,19 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
             />
           </div>
         </div>
-      </div>
+      </fieldset>
 
       {/* Right Side: Genres */}
-      <div className="flex flex-col md:flex-row md:items-center md:gap-6">
-        <label
+      <fieldset
+        className="w-auto flex flex-col"
+        aria-labelledby="genres-heading"
+      >
+        <legend
           id="genres-heading"
-          className="block text-lg text-white font-semibold md:text-right md:w-24"
+          className="block text-lg text-white font-semibold mb-2"
         >
           Genres
-        </label>
+        </legend>
 
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {allGenres.map((genre) => (
@@ -147,7 +152,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
             </button>
           ))}
         </div>
-      </div>
+      </fieldset>
     </section>
   );
 };
