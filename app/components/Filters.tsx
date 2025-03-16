@@ -46,7 +46,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
     setSelectedGenres((prevSelected) =>
       prevSelected.includes(genre)
         ? prevSelected.filter((g) => g !== genre)
-        : [...prevSelected, genre],
+        : [...prevSelected, genre]
     );
   };
 
@@ -134,13 +134,12 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           Genres
         </legend>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-2xl">
+        <div className="flex flex-wrap justify-center md:justify-start gap-3 max-w-[400px] md:max-w-none">
           {allGenres.map((genre) => (
             <button
               key={genre}
               onClick={() => toggleGenre(genre)}
-              className={`cursor-pointer border-2 border-teal rounded-full px-3 py-2 text-sm text-center transition focus:outline-none focus:ring-2 focus:ring-midnightBlue-300 w-full md:w-auto 
-              ${
+              className={`cursor-pointer border-2 border-teal rounded-full px-4 py-2 text-sm text-center transition focus:outline-none focus:ring-2 focus:ring-midnightBlue-300 ${
                 selectedGenres.includes(genre)
                   ? "bg-teal text-midnightBlue"
                   : "bg-transparent text-white"
