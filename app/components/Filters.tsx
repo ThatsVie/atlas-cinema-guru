@@ -134,12 +134,12 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           Genres
         </legend>
 
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:w-[450px]">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-2xl">
           {allGenres.map((genre) => (
             <button
               key={genre}
               onClick={() => toggleGenre(genre)}
-              className={`cursor-pointer border-2 border-teal rounded-full px-4 py-2 text-sm text-center transition focus:outline-none focus:ring-2 focus:ring-midnightBlue-300 w-full md:w-auto whitespace-nowrap overflow-hidden text-ellipsis
+              className={`cursor-pointer border-2 border-teal rounded-full px-3 py-2 text-sm text-center transition focus:outline-none focus:ring-2 focus:ring-midnightBlue-300 w-full md:w-auto 
               ${
                 selectedGenres.includes(genre)
                   ? "bg-teal text-midnightBlue"
