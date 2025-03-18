@@ -52,7 +52,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
 
   return (
     <section
-      className="p-6 w-full bg-midnightBlue flex flex-col md:flex-row md:items-start justify-between gap-6"
+      className="p-6 w-full bg-midnightBlue flex flex-col md:flex-row md:items-center justify-between gap-6"
       aria-labelledby="filter-section-title"
     >
       <h2 id="filter-section-title" className="sr-only">
@@ -67,7 +67,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
         <div>
           <label
             htmlFor="search-input"
-            className="block text-lg text-white font-semibold mb-2"
+            className="block text-lg text-white font-semibold mb-1"
           >
             Search
           </label>
@@ -87,7 +87,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           <div className="w-36">
             <label
               htmlFor="min-year-input"
-              className="block text-lg text-white font-semibold mb-2"
+              className="block text-lg text-white font-semibold mb-1"
             >
               Min Year
             </label>
@@ -105,7 +105,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
           <div className="w-36">
             <label
               htmlFor="max-year-input"
-              className="block text-lg text-white font-semibold mb-2"
+              className="block text-lg text-white font-semibold mb-1"
             >
               Max Year
             </label>
