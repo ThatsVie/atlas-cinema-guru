@@ -22,7 +22,8 @@ Users can browse movies, filter by year and genre, favorite movies, add them to 
 
 ---
 
-![cinema-guru](https://github.com/user-attachments/assets/814b2238-22d0-4934-a2fd-9e21cca5fb80)
+![cinema-guru](https://github.com/user-attachments/assets/73948a04-2b08-49c9-bf59-6479a5b8e696)
+
 
 ---
 
