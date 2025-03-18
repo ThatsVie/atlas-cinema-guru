@@ -24,6 +24,8 @@ Users can browse movies, filter by year and genre, favorite movies, add them to 
 
 ![cinema-guru](https://github.com/user-attachments/assets/814b2238-22d0-4934-a2fd-9e21cca5fb80)
 
+---
+
 ## Table of Contents
  
 - [Usage Guide](#usage-guide)  
@@ -62,7 +64,6 @@ Users can browse movies, filter by year and genre, favorite movies, add them to 
 ### Pagination
 - Movies are paginated, showing 6 titles per page. Click **Next** or **Previous** at the bottom to navigate.
 
-
 ---
 
 ## Tech Stack
@@ -80,6 +81,8 @@ This project was developed as part of a school curriculum to enhance skills in:
 - Integrating authentication using Auth.js (GitHub OAuth).
 - Managing state effectively with server and client-side rendering.
 - Styling complex UI components using Tailwind CSS.
+
+---
 
 ## Design Reference  
 - **[Figma Prototype](https://www.figma.com/design/AWVM8Ak0kY6aTdEbiqscFb/Cinema-Guru?node-id=0-1&p=f&t=gSfaV6yrvbIyl7kW-0)**  
@@ -103,8 +106,6 @@ The following sections break down the implementation process, including the chal
 - [Vercel](https://vercel.com/)
 - [Setting up a Database on Vercel](https://atlas-jswank.github.io/blog/next-js-database/)
 - [Seeding a Database](https://en.wikipedia.org/wiki/Database_seeding)
-
----
 
 ### What I Did:
 
@@ -139,11 +140,10 @@ The following sections break down the implementation process, including the chal
      ```
    - This created the required database tables and populated them with initial data.
 
----
-
 ### Result:
 - Successfully set up the project and database.
 - The starter template was running locally with seeded data.
+
 ---
 
 ## Task 1: Authentication & Layout
@@ -154,7 +154,6 @@ The following sections break down the implementation process, including the chal
 - [NextAuth.js Documentation](https://next-auth.js.org/)
 - [Next.js Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
 
----
 
 ### What I Did:
 
@@ -189,7 +188,6 @@ The following sections break down the implementation process, including the chal
   - Include Header and DashboardSidebar for consistent navigation across all pages.
   - Ensure responsiveness so that the sidebar works correctly on both mobile and desktop.
 
----
 
 ### Result:
 - Users can log in via GitHub and log out securely.
@@ -198,7 +196,6 @@ The following sections break down the implementation process, including the chal
 - The sidebar is collapsed by default and expands when hovered over.
 - The Activity Feed framework was set up (fully implemented in **Task 5**).
 
----
 
 ### Troubleshooting:
 
@@ -220,7 +217,6 @@ The following sections break down the implementation process, including the chal
 - **Filtering & Paging:** Users can filter movies by **title, year, and genre**. The page includes pagination.
 - **Movie Cards:** Display movie information and allow users to favorite or add movies to watch later.
 
----
 
 ### What I Did:
 
@@ -272,7 +268,6 @@ The following sections break down the implementation process, including the chal
 - Implemented **React state hooks (`useState`, `useEffect`, `useCallback`)** to manage movies, filters, and pagination dynamically.
 - **Ensured accessibility** by adding appropriate ARIA roles and `aria-live` attributes.
 
----
 
 ### Result:
 - The home page is now fully functional, filtering movies by:
@@ -294,7 +289,6 @@ The following sections break down the implementation process, including the chal
 - **Pagination Support:** Users can navigate through multiple pages of favorites.
 - **Movie Card Functionality:** The movie card should retain all interactivity and behavior from the home page.
 
----
 
 ### What I Did:
 
@@ -343,7 +337,6 @@ The following sections break down the implementation process, including the chal
   - Allows favoriting/unfavoriting movies.
   - Supports watch later toggling from the favorites page.
 
----
 
 ### Result:
 - The **Favorites Page** now:
@@ -364,7 +357,6 @@ The following sections break down the implementation process, including the chal
 - **Pagination Support:** Users can navigate through multiple pages.
 - **Movie Card Functionality:** The movie card should have the same interactive elements and behavior as those on the home page.
 
----
 
 ### What I Did:
 
@@ -412,7 +404,6 @@ The following sections break down the implementation process, including the chal
   - Allows adding/removing movies from Watch Later.
   - Supports favoriting/unfavoriting movies directly from the watch later list.
 
----
 
 ### Result:
 - The **Watch Later Page** now:
@@ -432,7 +423,6 @@ The following sections break down the implementation process, including the chal
 - [Fetching Data in Next.js](https://nextjs.org/docs/app/building-your-application/data-fetching)
 - [Date Formatting in JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString)
 
----
 
 ### What I Did:
 
@@ -461,7 +451,6 @@ The following sections break down the implementation process, including the chal
 - Used `aria-busy="true"` when loading to indicate activity updates are happening.
 - Formatted timestamps to show both date and time in a readable format.
 
----
 
 ### Result:
 - The Activity Feed is now fully functional.
@@ -478,7 +467,6 @@ The following sections break down the implementation process, including the chal
 - [Deploying from GitHub](https://vercel.com/docs/getting-started-with-vercel/import)
 - [Managing Environment Variables on Vercel](https://vercel.com/docs/environment-variables/managing-environment-variables)
 
----
 
 ### What I Did:
 
@@ -496,7 +484,6 @@ The following sections break down the implementation process, including the chal
   - **Activity feed updated correctly** when movies were added to lists.
   - **API endpoints responded as expected**.
 
----
 
 ### Result:
 - The application is **fully deployed and accessible** at:  
