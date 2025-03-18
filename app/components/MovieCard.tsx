@@ -125,7 +125,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
       {/* Movie Details */}
       <div
-        className="absolute bottom-0 left-0 w-full bg-navy bg-opacity-75 p-4
+        className="absolute bottom-0 left-0 w-full bg-navy p-4
         md:h-0 md:opacity-0 md:group-hover:h-[40%] md:group-hover:opacity-100 transition-all duration-500 ease-in-out"
         aria-hidden="true"
       >
@@ -137,14 +137,14 @@ const MovieCard: React.FC<MovieCardProps> = ({
         </h3>
         <p className="text-sm text-white">{movie.synopsis}</p>
         <div className="flex flex-wrap gap-2 mt-2">
-          <span className="bg-teal text-midnightBlue px-2 py-1 rounded-full text-xs">
+          <span className="bg-teal text-white px-2 py-1 rounded-full text-xs">
             {movie.genre}
           </span>
         </div>
       </div>
 
       {/* Movie Details Always Visible in Mobile */}
-      <div className="block md:hidden absolute bottom-0 left-0 w-full bg-navy bg-opacity-75 p-4">
+      <div className="block md:hidden absolute bottom-0 left-0 w-full bg-navy p-4">
         <h3 className="text-lg font-semibold text-white">
           {movie.title} ({movie.released})
         </h3>
