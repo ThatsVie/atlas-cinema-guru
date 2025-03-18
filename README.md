@@ -1,23 +1,28 @@
-# Atlas Cinema Guru
+<div align="center">
+ 
+# Cinema Guru
+![cinema-guru-pug](https://github.com/user-attachments/assets/53214950-0b7c-4d4b-9389-acede0fb8063)
 
-**Atlas Cinema Guru** is a full-stack movie tracking application built with Next.js, Tailwind CSS, and TypeScript. This application was developed as part of a school project to practice building a feature-rich, interactive movie database while integrating authentication, filtering, and dynamic UI components.
+## 🔗  **[Live Site](https://atlas-cinema-guru-beta.vercel.app/)**
+
+**Cinema Guru** is a full-stack movie tracking application built with Next.js, Tailwind CSS, and TypeScript. This application was developed as part of a school project to practice building a feature-rich, interactive movie database while integrating authentication, filtering, and dynamic UI components.
 
 Users can browse movies, filter by year and genre, favorite movies, add them to a watch later list, and track their activity through a real-time activity feed.
 
----
+</div>
 
-## Live Deployment
-The application is fully deployed and publicly accessible at:
+**To explore its features**:
 
-🔗 **[Atlas Cinema Guru Live Site](https://atlas-cinema-guru-beta.vercel.app/)**
-
-To explore its features:
 1. Log in using your GitHub account.
 2. Browse movies, filter by year and genre, and view details.
 3. Favorite movies or add them to the watch later list.
 4. Track recent actions in the activity feed.
 
 > **Note:** This project was developed for **educational purposes** and is not a production-ready application.
+
+---
+
+![cinema-guru](https://github.com/user-attachments/assets/814b2238-22d0-4934-a2fd-9e21cca5fb80)
 
 ## Table of Contents
  
@@ -39,6 +44,11 @@ To explore its features:
 
 ## Usage Guide
 
+### User Authentication
+- Users must log in with GitHub to access the app.
+- Unauthenticated users are redirected to the login page.
+- The header displays the logged-in user’s email and provides a logout option.
+
 ### Browsing Movies
 - Use the search bar to filter movies by title.
 - Select Min Year and Max Year to filter movies by release year.
@@ -52,10 +62,6 @@ To explore its features:
 ### Pagination
 - Movies are paginated, showing 6 titles per page. Click **Next** or **Previous** at the bottom to navigate.
 
-### User Authentication
-- Users must log in with GitHub to access the app.
-- Unauthenticated users are redirected to the login page.
-- The header displays the logged-in user’s email and provides a logout option.
 
 ---
 
