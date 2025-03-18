@@ -96,7 +96,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
               type="number"
               value={minYear}
               onChange={(e) => setMinYear(e.target.value)}
-              placeholder="Min"
+              placeholder="1990"
               className="p-3 border-2 bg-navy border-teal rounded-full w-full text-white focus:outline-none focus:ring-2 focus:ring-mintyTeal"
               aria-label="Enter minimum release year"
             />
@@ -114,7 +114,7 @@ const Filters: React.FC<FiltersProps> = ({ onFiltersChange }) => {
               type="number"
               value={maxYear}
               onChange={(e) => setMaxYear(e.target.value)}
-              placeholder="Max"
+              placeholder="2024"
               className="p-3 border-2 bg-navy border-teal rounded-full w-full text-white focus:outline-none focus:ring-2 focus:ring-mintyTeal"
               aria-label="Enter maximum release year"
             />
