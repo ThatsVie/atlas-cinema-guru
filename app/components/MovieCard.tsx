@@ -150,7 +150,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         </h3>
         <p className="text-sm text-white">{movie.synopsis}</p>
         <div className="flex flex-wrap gap-2 mt-2">
-          <span className="bg-teal text-midnightBlue px-2 py-1 rounded-full text-xs">
+          <span className="bg-teal text-white px-2 py-1 rounded-full text-xs">
             {movie.genre}
           </span>
         </div>
